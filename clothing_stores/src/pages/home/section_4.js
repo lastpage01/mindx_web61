@@ -83,7 +83,7 @@ class Section_4 extends Component {
                                   onClick={this.handleFavourite}
                                   style={{ cursor: "pointer" }}
                                 >
-                                  favorite_border
+                                  &#xe87d;
                                 </i>
                               </p>
                             </div>

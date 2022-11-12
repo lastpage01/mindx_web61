@@ -39,4 +39,52 @@ categoryRouter.get("/findByType", (req, res) => {
     });
 });
 
+categoryRouter.get("/findById", (req, res) => {
+  const { id } = req.query;
+  model
+    .findById(id)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+categoryRouter.post("/", (req, res) => {
+  const newCategory = req.body;
+  model
+    .create(newCategory)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+categoryRouter.put("/:id", (req, res) => {
+  const id = req.params.id;
+  const category = req.body;
+  model
+    .update(id,category)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((e) => {
+      res.send(e);
+    });
+});
+
+categoryRouter.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  model
+    .delete(id)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
 export default categoryRouter;

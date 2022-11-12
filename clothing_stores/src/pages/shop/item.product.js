@@ -72,9 +72,6 @@ class Item_Products extends Component {
       if (cart.product._id === this.state.currentProduct._id) {
         update = true;
         const newCount = Number(this.state.count) + Number(cart.count);
-        this.setState({
-          count: newCount,
-        });
         this.props.updateCart(this.state.currentProduct, newCount);
       }
     });

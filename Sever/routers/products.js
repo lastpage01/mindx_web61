@@ -16,6 +16,7 @@ productRouter.get("/", (req, res) => {
     });
 });
 
+
 productRouter.get("/findById/:id", (req, res) => {
   model
     .getById(req.params.id)
@@ -66,11 +67,11 @@ productRouter.post("/", (req, res) => {
 productRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
   const product = req.body;
-  // console.log(req);
+  // console.log(req.body);
   const p = await model.model.findById(id);
 
-  console.log("p::", p);
-  console.log("body::", req.body);
+  // console.log("p::", p);
+  // console.log("body::", req.body);
   if (!p) {
     return res.status(400).json({ message: "Product not found" });
   }

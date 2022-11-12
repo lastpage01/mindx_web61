@@ -1,10 +1,14 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { logout } from "../actions/users";
+import './style.css'
 class Header extends Component {
   constructor() {
     super();
     this.handleClick = this.handleClick.bind(this);
     this.navItem = document.getElementsByClassName("nav-link");
+    this.logOut = this.logOut.bind(this);
   }
   componentDidMount() {
     this.navItem[0].classList.add("active");
@@ -15,7 +19,12 @@ class Header extends Component {
     }
     e.target.classList.add("active");
   }
+  logOut = () => {
+    this.props.dispatch(logout());
+  };
   render() {
+    const { isLoggedIn } = this.props;
+    const carts = this.props.cartProducts;
     return (
       <>
         <div className="py-1 bg-black">
@@ -27,13 +36,13 @@ class Header extends Component {
                     <div className="icon mr-2 d-flex justify-content-center align-items-center">
                       <span className="icon-phone2"></span>
                     </div>
-                    <span className="text">+ 1235 2355 98</span>
+                    <span className="text">0338 087 022</span>
                   </div>
                   <div className="col-md pr-4 d-flex topper align-items-center">
                     <div className="icon mr-2 d-flex justify-content-center align-items-center">
                       <span className="icon-paper-plane"></span>
                     </div>
-                    <span className="text">youremail@email.com</span>
+                    <span className="text">quygiang2001@gmail.com</span>
                   </div>
                   <div className="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
                     <span className="text">
@@ -91,24 +100,39 @@ class Header extends Component {
                   onClick={this.handleClick}
                 >
                   <Link to={"/cart"} className="nav-link">
-                    <span className="icon-shopping_cart"></span>[0]
+                    <span className="icon-shopping_cart"></span>[{carts.length}]
                   </Link>
                 </li>
               </ul>
             </div>
-            <div style={{marginLeft :'20px'}}>
-              <Link to={""} >
-                Đăng kí
-              </Link>
-              /
-              <Link to={"/login"} className="">
-                Đăng Nhập
-              </Link>
-            </div>
+            {!isLoggedIn ? (
+              <div style={{ marginLeft: "20px"}}>
+                <Link to={"/register"} style={{ textDecoration:"none"}}>Đăng kí</Link>/
+                <Link to={"/login"} style={{textDecoration:"none"}}>Đăng Nhập</Link>
+              </div>
+            ) : (
+              <div style={{ margin: "7px 0 0 20px", cursor: "pointer" }}>
+                <i className="material-icons" onClick={this.logOut}>
+                  &#xe879;
+                </i>
+              </div>
+            )}
           </div>
         </nav>
       </>
     );
   }
 }
-export default Header;
+
+function mapStateToProps(state) {
+  const { isLoggedIn } = state.users;
+  const { message } = state.message;
+  const cartProducts = state.carts;
+  return {
+    isLoggedIn,
+    message,
+    cartProducts,
+  };
+}
+
+export default connect(mapStateToProps)(Header);

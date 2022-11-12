@@ -9,6 +9,7 @@ import {
   findProductsByIdCategory,
   retrieveProducts,
 } from "../../actions/products";
+import { handleSetStylePage } from "../../common/handleCommon";
 
 class Category extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ class Category extends Component {
     const type = e.target.text;
     this.getCategoryType(type);
     this.getProductIdCategory(this.state.category.Id);
+    localStorage.setItem("page","1")
   };
   getProductIdCategory = (Id_Category) => {
     this.props.findProductsByIdCategory(Id_Category);
@@ -52,6 +54,8 @@ class Category extends Component {
   };
   handleGetAllProduct = () => {
     this.props.retrieveProducts();
+    localStorage.setItem("page","1")
+    handleSetStylePage(Number(localStorage.getItem('page')), false)
   };
   render() {
     const { categories } = this.props;

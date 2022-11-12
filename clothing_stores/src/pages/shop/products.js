@@ -2,19 +2,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import { connect } from "react-redux";
-import React, { Component} from "react";
+import React, { Component } from "react";
 import { retrieveProducts, updateProduct } from "../../actions/products";
 import productServices from "../../services/product.services";
 import { Link } from "react-router-dom";
 
 class Products extends Component {
   item_pro;
+  products = [];
   constructor(props) {
     super(props);
     this.handleFavourite = this.handleFavourite.bind(this);
-    this.getProductId = this.getProductId.bind(this);
     this.updateProductFavourite = this.updateProductFavourite.bind(this);
-    // this.setStateProduct = this.setStateProduct.bind(this);
     this.state = {
       currentProduct: {
         _id: null,
@@ -30,59 +29,21 @@ class Products extends Component {
   componentDidMount() {
     console.log("list did mount");
     this.props.retrieveProducts();
+    localStorage.setItem("page", "1");
   }
 
   handleFavourite = (e) => {
-    // e.target.style.color = "red";
-
-    // const Favourite = Number(e.target.getAttribute("data-favourite")) + 1;
-
-    // let pro = this.state.currentProduct;
-    // pro.Favourite = Favourite;
-    // this.setState({
-    //   currentProduct: pro,
-    // });
-    this.updateProductFavourite(e.target.getAttribute("data"));
+    e.target.classList.add("favourite");
+    const favourite = Number(e.target.getAttribute("data-favourite")) + 1;
+    this.updateProductFavourite(e.target.getAttribute("data"), favourite);
   };
 
-  // setStateProduct = (id) => {
-  //   // const id = e.target.getAttribute("data");
-  //   // this.getProductId(id);
-  //   // cho nay e muon lmj the
-  // };
-
-  getProductId = (id) => {
-    productServices
-      .get(id)
-      .then((response) => {
-          this.setState({
-            currentProduct: response.data,
-          });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  updateProductFavourite = (id) => {
-    const product = {
-      
-        "Name": "aaaaa ",
-        "Id_Category": "001",
-        "Price": 940000,
-        "Favourite": 19,
-        "Img": "AoKhoac_1.jpg",
-        "Promotion": 17
-    
-    };
-console.log(123);
+  updateProductFavourite = (id, favourite) => {
+    productServices.getAllByPage({ Favourite: favourite });
     this.props
-      .updateProduct(id, product)
+      .updateProduct(id, { Favourite: favourite })
       .then((response) => {
         console.log(response);
-        // this.setState({ message: "The tutorial was updated successfully!" });
-        // em đang thử update luôn cái bản ghi đấy mà vẫn k dk
-
       })
       .catch((e) => {
         console.log(e);
@@ -90,10 +51,13 @@ console.log(123);
   };
   render() {
     const { products } = this.props;
+    let countPage = Number(localStorage.getItem("page"));
+    if (countPage === 0) countPage = 1;
+    this.products = products.slice(countPage*3-3, countPage * 3);
     return (
       <div className="row">
-        {products.length > 0
-          ? products.map((product, index) => {
+        {this.products.length > 0
+          ? this.products.map((product, index) => {
               return (
                 <div key={index} className="col-sm-6 col-md-6 col-lg-4 ">
                   <div className="product">
@@ -126,28 +90,21 @@ console.log(123);
                           <p className="text-right">
                             <i
                               className="material-icons"
-                              data-favourite={product.Favourite} 
+                              data-favourite={product.Favourite}
                               data={product._id}
-                              onClick={this.handleFavourite} // nay đúng kh em// vâng ạ e
+                              onClick={this.handleFavourite}
                               style={{ cursor: "pointer" }}
                             >
-                              favorite_border 12333
+                              &#xe87d;
                             </i>
-                            {/* // cái trái tym kìa anh oke :D */}
                           </p>
                         </div>
                       </div>
                       <p className="bottom-area d-flex px-3">
                         <Link
-                          to={`/shop/${product._id}`}  // em muốn nhấn vào link thì nó truyền id vào sau , oke, thu xem em
-                          // ơ hôm trước em làm như này luôn mà bị lỗi sao hôm nay lại đk
-                          // e có nhầm `` vs '' kh à nhỉ thế a xem em cái uodate với ạ
-                          // cho
+                          to={`/shop/${product._id}`}
                           className="add-to-cart text-center py-2 mr-1"
                           data={product._id}
-                          // onMouseDown={this.setStateProduct}
-                          // onMouseUp={this.setStateProduct}
-                          // onClick={() => this.setStateProduct(product._id)}
                         >
                           Add to cart +
                         </Link>

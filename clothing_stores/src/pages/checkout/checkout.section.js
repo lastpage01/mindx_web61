@@ -2,222 +2,289 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import CheckButton from "react-validation/build/button";
+import { Link } from "react-router-dom";
+import { validatePhone } from "./validateForm";
+import billServices from "../../services/bill.services";
+import billDetailsServices from "../../services/bill.details.services";
 
 class CheckOut_Section extends Component {
-  render() {
-    const carts = this.props.cartProducts;
-    let total = 0;
-    carts.map((cart) => {
-      total =
-        total +
-        (cart.product.Price -
-          (cart.product.Price * cart.product.Promotion) / 100) *
-          cart.count;
+  constructor(props) {
+    super(props);
+    this.handleBuyProduct = this.handleBuyProduct.bind(this);
+    this.onchangeFirstName = this.onchangeFirstName.bind(this);
+    this.onchangeLastName = this.onchangeLastName.bind(this);
+    this.onchangePhone = this.onchangePhone.bind(this);
+    this.onchangeEmail = this.onchangeEmail.bind(this);
+    this.onchangeProvince = this.onchangeProvince.bind(this);
+    this.onchangeDistrict = this.onchangeDistrict.bind(this);
+    this.onchangeWard = this.onchangeWard.bind(this);
+    this.onchangeDetailedAddress = this.onchangeDetailedAddress.bind(this);
+
+    this.state = {
+      Id: null,
+      FirstName: "",
+      LastName: "",
+      Phone: null,
+      Email: "",
+      Province: "",
+      District: "",
+      Ward: "",
+      DetailedAddress: "",
+      Total: null,
+      User: "",
+      Dated: new Date(),
+    };
+  }
+
+  componentDidMount() {
+    billServices.getAll().then((response) => {
+      const arrBill = response.data.bills;
+      const count = response.data.count;
+      this.setState({
+        Id: Number(arrBill[count - 1].Id) + 1,
+        Total: Number(localStorage.getItem("total")),
+        User: localStorage.getItem("username"),
+      });
     });
+  }
+
+  handleBuyProduct = (e) => {
+    e.preventDefault();
+    this.form.validateAll();
+    console.log(this.state);
+    if (this.checkBtn.context._errors.length === 0) {
+      billServices.create(this.state).then(() => {
+        const carts = this.props.cartProducts;
+        carts.map((cart) => {
+          const newTotal =
+            (cart.product.Price -
+              (cart.product.Price * cart.product.Promotion) / 100) *
+            cart.count;
+          const newBillDetail = {
+            IdBill: Number(this.state.Id),
+            IdProduct: cart.product._id,
+            Price: cart.product.Price,
+            Promotion: cart.product.Promotion,
+            Quantity: cart.count,
+            Total: newTotal,
+          };
+          billDetailsServices.create(newBillDetail).then(() => {
+            alert("successfully purchase...!");
+            window.location = "/shop";
+          });
+        });
+      });
+    }
+  };
+
+  onchangeFirstName = (e) => {
+    this.setState({
+      FirstName: e.target.value,
+    });
+    console.log(this.state.Dated.toUTCString());
+  };
+  onchangeLastName = (e) => {
+    this.setState({
+      LastName: e.target.value,
+    });
+  };
+  onchangePhone = (e) => {
+    this.setState({
+      Phone: Number(e.target.value),
+    });
+  };
+  onchangeEmail = (e) => {
+    this.setState({
+      Email: e.target.value,
+    });
+  };
+  onchangeProvince = (e) => {
+    this.setState({
+      Province: e.target.value,
+    });
+  };
+  onchangeDistrict = (e) => {
+    this.setState({
+      District: e.target.value,
+    });
+  };
+  onchangeWard = (e) => {
+    this.setState({
+      Ward: e.target.value,
+    });
+  };
+  onchangeDetailedAddress = (e) => {
+    this.setState({
+      DetailedAddress: e.target.value,
+    });
+  };
+  render() {
     return (
       <>
         <section className="ftco-section">
           <div className="container">
             <div className="row justify-content-center">
               <div className="col-xl-8 ">
-                <form action="#" className="billing-form">
-                  <h3 className="mb-4 billing-heading">Billing Details</h3>
+                <Form
+                  className="billing-form"
+                  onSubmit={this.handleBuyProduct}
+                  ref={(c) => {
+                    this.form = c;
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                      marginTop: "50px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <h3 className="mb-4 billing-heading">Billing Details</h3>
+                    <Link
+                      to={"/cart"}
+                      type="submit"
+                      className="btn btn-danger"
+                      style={{
+                        height: " 40px",
+                        width: " 100px",
+                        borderRadius: "35px",
+                      }}
+                    >
+                      Back
+                    </Link>
+                  </div>
                   <div className="row align-items-end">
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="firstname">Firt Name</label>
-                        <input
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="firstname">Họ :</label>
+                        <Input
                           type="text"
                           className="form-control"
                           placeholder=""
+                          onChange={this.onchangeFirstName}
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="lastname">Last Name</label>
-                        <input
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="lastname">Tên :</label>
+                        <Input
                           type="text"
                           className="form-control"
                           placeholder=""
-                        />
-                      </div>
-                    </div>
-                    <div className="w-100"></div>
-                    <div className="col-md-12">
-                      <div className="form-group">
-                        <label htmlFor="country">State / Country</label>
-                        <div className="select-wrap">
-                          <div className="icon">
-                            <span className="ion-ios-arrow-down"></span>
-                          </div>
-                          <select name="" id="" className="form-control">
-                            <option value="">France</option>
-                            <option value="">Italy</option>
-                            <option value="">Philippines</option>
-                            <option value="">South Korea</option>
-                            <option value="">Hongkong</option>
-                            <option value="">Japan</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-100"></div>
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="streetaddress">Street Address</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="House number and street name"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Appartment, suite, unit etc: (optional)"
+                          onChange={this.onchangeLastName}
                         />
                       </div>
                     </div>
                     <div className="w-100"></div>
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="towncity">Town / City</label>
-                        <input
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="phone">Số Điện Thoại : </label>
+                        <Input
                           type="text"
                           className="form-control"
                           placeholder=""
+                          onChange={this.onchangePhone}
+                          validations={[validatePhone]}
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="postcodezip">Postcode / ZIP *</label>
-                        <input
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="emailaddress">Email :</label>
+                        <Input
                           type="text"
                           className="form-control"
                           placeholder=""
+                          onChange={this.onchangeEmail}
                         />
                       </div>
                     </div>
                     <div className="w-100"></div>
+                    <div className="w-100"></div>
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="phone">Phone</label>
-                        <input
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="streetaddress">
+                          Tỉnh / Thành Phố :
+                        </label>
+                        <Input
                           type="text"
                           className="form-control"
                           placeholder=""
+                          onChange={this.onchangeProvince}
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="emailaddress">Email Address</label>
-                        <input
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="streetaddress">Quận / Huyện :</label>
+                        <Input
                           type="text"
                           className="form-control"
                           placeholder=""
+                          onChange={this.onchangeDistrict}
                         />
                       </div>
                     </div>
                     <div className="w-100"></div>
-                  </div>
-                </form>
+                    <div className="w-100"></div>
+                    <div className="col-md-6">
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="streetaddress">Phường / Xã :</label>
+                        <Input
+                          type="text"
+                          className="form-control"
+                          placeholder=""
+                          onChange={this.onchangeWard}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="form-group" style={{ height: "100px" }}>
+                        <label htmlFor="streetaddress">
+                          Địa chỉ chi tiết :
+                        </label>
+                        <Input
+                          type="text"
+                          className="form-control"
+                          placeholder=""
+                          onChange={this.onchangeDetailedAddress}
+                        />
+                      </div>
+                    </div>
 
-                <div className="row mt-5 pt-3 d-flex">
-                  <div className="col-md-6 d-flex">
-                    <div className="cart-detail cart-total bg-light p-3 p-md-4">
-                      <h3 className="billing-heading mb-4">Cart Total</h3>
-                      {/* <p className="d-flex">
-                        <span>Subtotal</span>
-                        <span>$20.60</span>
-                      </p>
-                      <p className="d-flex">
-                        <span>Delivery</span>
-                        <span>$0.00</span>
-                      </p>
-                      <p className="d-flex">
-                        <span>Discount</span>
-                        <span>$3.00</span>
-                      </p>
-                      <hr /> */}
-                      <p className="d-flex total-price">
-                        <span>Total</span>
-                        <span>{total}</span>
-                      </p>
+                    <div
+                      style={{
+                        width: "100%",
+                        textAlign: "center",
+                        marginTop: "50px",
+                      }}
+                    >
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        style={{
+                          height: " 60px",
+                          width: " 200px",
+                          borderRadius: "35px",
+                        }}
+                      >
+                        Place an order
+                      </button>
                     </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="cart-detail bg-light p-3 p-md-4">
-                      <h3 className="billing-heading mb-4">Payment Method</h3>
-                      <div className="form-group">
-                        <div className="col-md-12">
-                          <div className="radio">
-                            <label>
-                              <input
-                                type="radio"
-                                name="optradio"
-                                className="mr-2"
-                              />{" "}
-                              Direct Bank Tranfer
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div className="col-md-12">
-                          <div className="radio">
-                            <label>
-                              <input
-                                type="radio"
-                                name="optradio"
-                                className="mr-2"
-                              />{" "}
-                              Check Payment
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div className="col-md-12">
-                          <div className="radio">
-                            <label>
-                              <input
-                                type="radio"
-                                name="optradio"
-                                className="mr-2"
-                              />{" "}
-                              Paypal
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div className="col-md-12">
-                          <div className="checkbox">
-                            <label>
-                              <input
-                                type="checkbox"
-                                value=""
-                                className="mr-2"
-                              />{" "}
-                              I have read and accept the terms and conditions
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <p>
-                        <a href="#" className="btn btn-primary py-3 px-4">
-                          Place an order
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  <CheckButton
+                    style={{ display: "none" }}
+                    ref={(c) => {
+                      this.checkBtn = c;
+                    }}
+                  />
+                </Form>
               </div>
             </div>
           </div>

@@ -1,0 +1,58 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import imgLogout from "../../images/undraw_profile.svg";
+import "./style.css";
+class AdminSearch extends Component {
+  constructor(props) {
+    super(props);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.check = true;
+  }
+  handleLogout(e) {
+    const logout = document.getElementsByClassName("dropdown-menu")[0];
+    if (this.check === true) {
+      this.check = false;
+      logout.style.display = "block";
+    } else {
+      logout.style.display = "none";
+      this.check = true;
+    }
+  }
+  render() {
+    return (
+      <nav className="navbar navbar-expand  mb-4 shadow">
+        <Link to={"/admin"} className="sidebar-heading">Quản lý sản phẩm</Link>
+        <Link to={"/admin/quanlyhoadon"} className="sidebar-heading">Quản lý hóa đơn</Link>
+        <Link to={'/admin/quanlytaikhoan'} className="sidebar-heading">Quản lý tài khoản</Link>
+        <Link to={'/admin/quanlydanhmuc'} className="sidebar-heading">Quản lý danh mục</Link>
+
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item dropdown no-arrow">
+            <div className="dropdown-toggle" onClick={this.handleLogout}>
+              <span className="mr-2 d-none d-lg-inline text-gray-600 small">
+                Douglas McGee
+              </span>
+              <img
+                className="img-profile rounded-circle"
+                src={`${imgLogout}`}
+                width={"25px"}
+              />
+            </div>
+            <div className="dropdown-menu dropdown-menu-right shadow">
+              <a className="dropdown-item">
+                <i className="material-icons" style={{ marginTop: "2px" }}>
+                  &#xe879;
+                </i>
+                <div style={{ margin: "0 0 0 10px" }}>Logout</div>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    );
+  }
+}
+
+export default AdminSearch;

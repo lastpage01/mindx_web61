@@ -1,0 +1,29 @@
+.sidebar-heading {
+  cursor: pointer;
+  height: 50px;
+  /* background-color: red; */
+  margin: 0 0 0 30px;
+  padding: 10px 10px 0 10px;
+}
+.navbar {
+  padding: 0;
+  width: 100%;
+}
+
+.sidebar-heading:hover {
+  background-color: rgb(0, 255, 251);
+}
+.dropdown-toggle {
+  cursor: pointer;
+  display: flex;
+  margin-right: 30px;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 35px;
+  padding: 0;
+  margin-right: 30px;
+}
+.dropdown-item {
+  display: flex;
+}

@@ -13,7 +13,11 @@ import Cart from "./pages/cart";
 import CheckOut from "./pages/checkout";
 import Item_Products from "./pages/shop/item.product";
 import Login from "./pages/login";
-
+import Register from "./pages/register";
+import Admin from "./pages_admin/products";
+import Admin_HoaDon from "./pages_admin/hoadon";
+import Admin_User from "./pages_admin/user";
+import Admin_Category from "./pages_admin/categories";
 class App extends Component {
   render() {
     return (
@@ -27,6 +31,11 @@ class App extends Component {
         <Route exact path="/checkout" component={CheckOut} />
         <Route exact path="/shop/:id" component={Item_Products} />
         <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path={["/admin","/admin/quanlysanpham"]} component={Admin} />
+        <Route exact path="/admin/quanlyhoadon" component={Admin_HoaDon} />
+        <Route exact path="/admin/quanlytaikhoan" component={Admin_User} />
+        <Route exact path="/admin/quanlydanhmuc" component={Admin_Category} />
         <Route exact path={['/',"/shop","/about","/contact","/cart","/checkout","/shop/:id"]} component={Footer}/>
 
       </Router>

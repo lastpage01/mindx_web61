@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { updateCart, deleteCart } from "../../actions/carts";
 
@@ -27,7 +28,7 @@ class Section_Product extends Component {
   handleDeleteProductCart = (e) => {
     const id = e.target.getAttribute("data");
     const product = this.findByIdOnCarts(id);
-    this.props.deleteCart(product)
+    this.props.deleteCart(product);
   };
 
   handleUpdateCountCart = (e) => {
@@ -56,89 +57,99 @@ class Section_Product extends Component {
     const carts = this.props.cartProducts;
     // console.log(carts);
     return (
-      <>{carts.length > 0 ?         <div className="row">
-      <div className="col-md-12 ">
-        <div className="cart-list">
-          <table className="table">
-            <thead className="thead-primary">
-              <tr className="text-center">
-                <th>Remove</th>
-                <th>&nbsp;</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {carts &&
-                carts.map((cart, index) => {
-                  return (
-                    <tr className="text-center" key={index}>
-                      <td className="product-remove">
-                        <span
-                          className="ion-ios-close"
-                          style={{ cursor: "pointer" }}
-                          onMouseLeave={(e) => {
-                            e.target.style.color = "gray";
-                          }}
-                          onMouseMove={(e) => {
-                            e.target.style.color = "red";
-                          }}
-                          onClick={this.handleDeleteProductCart}
-                          data={cart.product._id}
-                        ></span>
-                      </td>
-
-                      <td className="image-prod">
-                        <div
-                          className="img"
-                          style={{
-                            backgroundImage: `url(img/${cart.product.Img})`,
-                          }}
-                        ></div>
-                      </td>
-
-                      <td className="product-name">
-                        <h3>{cart.product.Name}</h3>
-                      </td>
-
-                      <td className="price">
-                        {cart.product.Price -
-                          (cart.product.Price * cart.product.Promotion) /
-                            100}
-                      </td>
-
-                      <td className="quantity">
-                        <div className="input-group mb-3">
-                          <input
-                            type="text"
-                            name="quantity"
-                            className="quantity form-control input-number"
-                            defaultValue={cart.count}
-                            min="1"
-                            max="100"
-                            onChange={this.handleUpdateCountCart}
-                            data={cart.product._id}
-                          />
-                        </div>
-                      </td>
-
-                      <td className="total">
-                        {(cart.product.Price -
-                          (cart.product.Price * cart.product.Promotion) /
-                            100) *
-                          cart.count}
-                      </td>
+      <>
+        {carts.length > 0 ? (
+          <div className="row">
+            <div className="col-md-12 ">
+              <div className="cart-list">
+                <table className="table">
+                  <thead className="thead-primary">
+                    <tr className="text-center">
+                      <th>Remove</th>
+                      <th>&nbsp;</th>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
                     </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div> : "Please select a product to purchase"}
+                  </thead>
+                  <tbody>
+                    {carts &&
+                      carts.map((cart, index) => {
+                        return (
+                          <tr className="text-center" key={index}>
+                            <td className="product-remove">
+                              <span
+                                className="ion-ios-close"
+                                style={{ cursor: "pointer" }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.color = "gray";
+                                }}
+                                onMouseMove={(e) => {
+                                  e.target.style.color = "red";
+                                }}
+                                onClick={this.handleDeleteProductCart}
+                                data={cart.product._id}
+                              ></span>
+                            </td>
 
+                            <td className="image-prod">
+                              <div
+                                className="img"
+                                style={{
+                                  backgroundImage: `url(img/${cart.product.Img})`,
+                                }}
+                              ></div>
+                            </td>
+
+                            <td className="product-name">
+                              <h3>{cart.product.Name}</h3>
+                            </td>
+
+                            <td className="price">
+                              {cart.product.Price -
+                                (cart.product.Price * cart.product.Promotion) /
+                                  100}
+                            </td>
+
+                            <td className="quantity">
+                              <div className="input-group mb-3">
+                                <input
+                                  type="text"
+                                  name="quantity"
+                                  className="quantity form-control input-number"
+                                  defaultValue={cart.count}
+                                  min="1"
+                                  max="100"
+                                  onChange={this.handleUpdateCountCart}
+                                  data={cart.product._id}
+                                />
+                              </div>
+                            </td>
+
+                            <td className="total">
+                              {(cart.product.Price -
+                                (cart.product.Price * cart.product.Promotion) /
+                                  100) *
+                                cart.count}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{width:"100%" , textAlign: "center"}}>
+            <div>Please select a product to purchase</div>
+            <br/>
+            <Link to={"/shop"} className="btn btn-danger">
+              Mua Ngay
+            </Link>
+          </div>
+        )}
       </>
     );
   }
