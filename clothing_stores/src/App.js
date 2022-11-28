@@ -18,28 +18,90 @@ import Admin from "./pages_admin/products";
 import Admin_HoaDon from "./pages_admin/hoadon";
 import Admin_User from "./pages_admin/user";
 import Admin_Category from "./pages_admin/categories";
+import { connect } from "react-redux";
 class App extends Component {
   render() {
+    const { isLoggedIn, user } = this.props;
+    console.log(user);
+    console.log(isLoggedIn);
     return (
-      <Router>
-        <Route exact path={['/',"/shop","/about","/contact","/cart","/checkout","/shop/:id"]} component={Header}/>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/shop" component={Shop} />
-        <Route exact path="/about" component={About} /> 
-        <Route exact path="/contact" component={Contact} />
-        <Route exact path="/cart" component={Cart} />
-        <Route exact path="/checkout" component={CheckOut} />
-        <Route exact path="/shop/:id" component={Item_Products} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/register" component={Register} />
-        <Route exact path={["/admin","/admin/quanlysanpham"]} component={Admin} />
-        <Route exact path="/admin/quanlyhoadon" component={Admin_HoaDon} />
-        <Route exact path="/admin/quanlytaikhoan" component={Admin_User} />
-        <Route exact path="/admin/quanlydanhmuc" component={Admin_Category} />
-        <Route exact path={['/',"/shop","/about","/contact","/cart","/checkout","/shop/:id"]} component={Footer}/>
-
-      </Router>
+      <>
+        <Router>
+          <Route
+            exact
+            path={[
+              "/",
+              "/shop",
+              "/about",
+              "/contact",
+              "/cart",
+              "/checkout",
+              "/shop/:id",
+            ]}
+            component={Header}
+          />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/shop" component={Shop} />
+          <Route exact path="/about" component={About} />
+          <Route exact path="/contact" component={Contact} />
+          <Route exact path="/cart" component={Cart} />
+          <Route exact path="/checkout" component={CheckOut} />
+          <Route exact path="/shop/:id" component={Item_Products} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          {isLoggedIn === true && user.admin === true ? (
+            <>
+              <Route
+                exact
+                path={["/admin", "/admin/quanlysanpham"]}
+                component={Admin}
+              />
+              <Route
+                exact
+                path="/admin/quanlyhoadon"
+                component={Admin_HoaDon}
+              />
+              <Route
+                exact
+                path="/admin/quanlytaikhoan"
+                component={Admin_User}
+              />
+              <Route
+                exact
+                path="/admin/quanlydanhmuc"
+                component={Admin_Category}
+              />
+            </>
+          ) : (
+            ""
+          )}
+          <Route
+            exact
+            path={[
+              "/",
+              "/shop",
+              "/about",
+              "/contact",
+              "/cart",
+              "/checkout",
+              "/shop/:id",
+            ]}
+            component={Footer}
+          />
+        </Router>
+      </>
     );
   }
 }
-export default App;
+
+function mapStateToProps(state) {
+  const { isLoggedIn } = state.users;
+  const { user } = state.users;
+  const { message } = state.message;
+  return {
+    isLoggedIn,
+    message,
+    user,
+  };
+}
+export default connect(mapStateToProps)(App);

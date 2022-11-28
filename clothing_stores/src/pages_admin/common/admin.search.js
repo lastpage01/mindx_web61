@@ -1,13 +1,16 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import imgLogout from "../../images/undraw_profile.svg";
 import "./style.css";
+import { logout } from "../../actions/users";
+import { connect } from "react-redux";
 class AdminSearch extends Component {
   constructor(props) {
     super(props);
     this.handleLogout = this.handleLogout.bind(this);
+    this.logout = this.logout.bind(this);
     this.check = true;
   }
   handleLogout(e) {
@@ -20,7 +23,12 @@ class AdminSearch extends Component {
       this.check = true;
     }
   }
+  logout = ()=>{
+    this.props.logout();
+  }
   render() {
+    const { isLoggedIn } = this.props;
+    if(!isLoggedIn) return <Redirect to={'/login'}/>
     return (
       <nav className="navbar navbar-expand  mb-4 shadow">
         <Link to={"/admin"} className="sidebar-heading">Quản lý sản phẩm</Link>
@@ -41,12 +49,12 @@ class AdminSearch extends Component {
               />
             </div>
             <div className="dropdown-menu dropdown-menu-right shadow">
-              <a className="dropdown-item">
+              <Link to={'/login'} className="dropdown-item" onClick={this.logout}>
                 <i className="material-icons" style={{ marginTop: "2px" }}>
                   &#xe879;
                 </i>
                 <div style={{ margin: "0 0 0 10px" }}>Logout</div>
-              </a>
+              </Link>
             </div>
           </li>
         </ul>
@@ -55,4 +63,14 @@ class AdminSearch extends Component {
   }
 }
 
-export default AdminSearch;
+function mapStateToProps(state) {
+  const { isLoggedIn } = state.users;
+  const { message } = state.message;
+  const cartProducts = state.carts;
+  return {
+    isLoggedIn,
+    message,
+    cartProducts,
+  };
+}
+export default connect(mapStateToProps, {logout})(AdminSearch);
