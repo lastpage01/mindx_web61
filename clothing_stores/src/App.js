@@ -56,11 +56,11 @@ class App extends Component {
                 path={["/admin", "/admin/quanlysanpham"]}
                 component={Admin}
               />
-              <Route
+              {/* <Route
                 exact
                 path="/admin/quanlyhoadon"
                 component={Admin_HoaDon}
-              />
+              /> */}
               <Route
                 exact
                 path="/admin/quanlytaikhoan"

@@ -32,7 +32,7 @@ class AdminSearch extends Component {
     return (
       <nav className="navbar navbar-expand  mb-4 shadow">
         <Link to={"/admin"} className="sidebar-heading">Quản lý sản phẩm</Link>
-        <Link to={"/admin/quanlyhoadon"} className="sidebar-heading">Quản lý hóa đơn</Link>
+        {/* <Link to={"/admin/quanlyhoadon"} className="sidebar-heading">Quản lý hóa đơn</Link> */}
         <Link to={'/admin/quanlytaikhoan'} className="sidebar-heading">Quản lý tài khoản</Link>
         <Link to={'/admin/quanlydanhmuc'} className="sidebar-heading">Quản lý danh mục</Link>
 
